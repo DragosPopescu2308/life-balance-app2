@@ -1,52 +1,31 @@
-package com.lifebalanceapp.model;
+package com.lifebalanceapp.dto;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "incomes")
-public class Income {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class IncomeResponseDto {
     private Integer id;
+    private Integer userId;
+    private Integer categoryId;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @Column(nullable = false, length = 100)
     private String title;
-
-    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
-
-    @Column(name = "date_received", nullable = false)
     private LocalDate dateReceived;
-
-    @Column(columnDefinition = "TEXT")
     private String notes;
-
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Income() {}
+    public IncomeResponseDto() {}
 
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
 
-    public Category getCategory() { return category; }
-    public void setCategory(Category category) { this.category = category; }
+    public Integer getCategoryId() { return categoryId; }
+    public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
