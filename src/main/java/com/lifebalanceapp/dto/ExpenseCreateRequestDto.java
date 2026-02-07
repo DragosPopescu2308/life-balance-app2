@@ -1,11 +1,16 @@
 package com.lifebalanceapp.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class ExpenseCreateRequestDto {
     private Integer userId;
+
+    @NotNull(message = "Category is required")
     private Integer categoryId;
+
     private String title;
     private BigDecimal amount;
     private LocalDate dateSpent;

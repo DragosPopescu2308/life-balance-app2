@@ -1,5 +1,6 @@
 package com.lifebalanceapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -18,10 +19,18 @@ public class User {
     private String email;
 
     @Column(nullable = false, length = 255)
+    @JsonIgnore
     private String password;
+
+    @Column(columnDefinition = "TEXT")
+    private String about;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "avatar_path", length = 500)
+    private String avatarPath;
+
 
     public User() {}
 
@@ -41,4 +50,12 @@ public class User {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getAbout() { return about; }
+    public void setAbout(String about) { this.about = about; }
+
+    public String getAvatarPath() { return avatarPath; }
+    public void setAvatarPath(String avatarPath) { this.avatarPath = avatarPath; }
+
+
 }
