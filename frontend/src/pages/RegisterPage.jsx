@@ -18,7 +18,7 @@ export default function RegisterPage(){
     setError(null); setLoading(true);
     try{
       await register({ fullName, email, password, about });
-      nav('/app');
+      nav('/login');
     }catch(err){
       setError(err.message || 'Register failed');
     }finally{ setLoading(false); }

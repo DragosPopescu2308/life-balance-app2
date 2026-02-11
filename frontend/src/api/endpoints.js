@@ -1,4 +1,4 @@
-// src/api/endpoints.js
+
 import { apiGet, apiPost, apiPut, apiDelete, apiPostMultipart, API_BASE } from './client';
 
 export const auth = {
@@ -33,8 +33,17 @@ export const expenses = {
 };
 
 export const dashboard = {
-  monthly: (month) => apiGet(month ? `/dashboard?month=${encodeURIComponent(month)}` : '/dashboard')
+  monthly: (month) => apiGet(month ? `/dashboard?month=${encodeURIComponent(month)}` : '/dashboard'),
+
+
+  trend: ({ months = 6, endMonth } = {}) => {
+    const qs = new URLSearchParams()
+    qs.set('months', String(months))
+    if (endMonth) qs.set('endMonth', endMonth)
+    return apiGet(`/dashboard/trend?${qs.toString()}`)
+  }
 };
+
 
 export const receipts = {
   list: (expenseId) => apiGet(`/expenses/${expenseId}/receipts`),
@@ -56,7 +65,7 @@ export const profile = {
     return apiPostMultipart('/profile/avatar', fd)
   },
 
-  // ✅ FIX: asta lipsea
+
   deleteAvatar: () => apiDelete('/profile/avatar'),
 };
 

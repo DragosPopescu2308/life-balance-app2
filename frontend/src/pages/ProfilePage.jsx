@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import AppShell from '../layout/AppShell'
 import { useAuth } from '../lib/auth'
-import { profile as profileApi } from '../api/endpoints'
+import { profile as profileApi, savings as savingsApi } from '../api/endpoints'
 import { toast } from '../lib/toast'
 import { API_BASE } from '../api/client'
 import Modal from '../components/Modal'
@@ -29,9 +29,15 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
 
+  // ✅ Savings settings state
+  const [savingsLoading, setSavingsLoading] = useState(true)
+  const [savingsSaving, setSavingsSaving] = useState(false)
+  const [savingsActive, setSavingsActive] = useState(true)
+  const [savingsPercentage, setSavingsPercentage] = useState(10)
+
   useEffect(() => {
     setFormFromUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [user])
 
   function setFormFromUser() {
@@ -41,6 +47,35 @@ export default function ProfilePage() {
 
   const displayName = user?.fullName || user?.email || 'User'
   const avatarSrc = user?.avatarUrl ? `${API_BASE}${user.avatarUrl}?t=${Date.now()}` : null
+
+
+  useEffect(() => {
+    let mounted = true
+
+    async function loadSettings() {
+      if (!user) {
+        if (mounted) setSavingsLoading(false)
+        return
+      }
+
+      setSavingsLoading(true)
+      try {
+        const s = await savingsApi.settings()
+        if (!mounted) return
+
+        setSavingsActive(Boolean(s?.active))
+        setSavingsPercentage(Number(s?.percentage ?? 10))
+      } catch (err) {
+        if (!mounted) return
+        toast(err.message || 'Could not load savings settings', 'error')
+      } finally {
+        if (mounted) setSavingsLoading(false)
+      }
+    }
+
+    loadSettings()
+    return () => { mounted = false }
+  }, [user])
 
   async function handleSave() {
     setSaving(true)
@@ -88,6 +123,33 @@ export default function ProfilePage() {
       window.location.reload()
     } catch (err) {
       toast(err.message || 'Delete failed', 'error')
+    }
+  }
+
+
+  async function handleSavingsSave() {
+    const pct = Number(savingsPercentage)
+
+    if (Number.isNaN(pct)) {
+      toast('Percentage must be a number.', 'error')
+      return
+    }
+    if (pct < 0 || pct > 100) {
+      toast('Percentage must be between 0 and 100.', 'error')
+      return
+    }
+
+    setSavingsSaving(true)
+    try {
+      await savingsApi.updateSettings({
+        percentage: pct,
+        active: Boolean(savingsActive),
+      })
+      toast('Savings settings updated', 'success')
+    } catch (err) {
+      toast(err.message || 'Could not update savings settings', 'error')
+    } finally {
+      setSavingsSaving(false)
     }
   }
 
@@ -149,6 +211,62 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* ✅ Savings settings card */}
+        <div className="bg-slate-800 rounded p-6 border border-slate-700/60">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-lg font-semibold">Savings settings</div>
+              <div className="text-sm text-slate-400">
+                Auto-save a percentage from each new income.
+              </div>
+            </div>
+
+            <button
+              className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 disabled:opacity-60"
+              onClick={handleSavingsSave}
+              disabled={savingsLoading || savingsSaving}
+              type="button"
+            >
+              {savingsSaving ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+
+          <hr className="border-slate-700 my-5" />
+
+          {savingsLoading ? (
+            <div className="text-sm text-slate-400">Loading...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={Boolean(savingsActive)}
+                  onChange={e => setSavingsActive(e.target.checked)}
+                />
+                <span className="text-sm text-slate-200">Active</span>
+              </label>
+
+              <label className="block">
+                <div className="text-sm text-slate-300 mb-1">Percentage</div>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.1}
+                  className="w-full p-2 rounded bg-slate-900 outline-none focus:ring-2 focus:ring-slate-600"
+                  value={savingsPercentage}
+                  onChange={e => setSavingsPercentage(e.target.value)}
+                />
+                <div className="text-xs text-slate-400 mt-1">0–100%</div>
+              </label>
+
+              <div className="text-sm text-slate-300">
+                Example: income 1000 → saves <b>{(Number(savingsPercentage || 0) / 100 * 1000).toFixed(2)}</b>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Profile main card */}

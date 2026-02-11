@@ -21,7 +21,7 @@ export default function IncomesTab({ month }) {
   const catOptions = useMemo(() => cats ?? [], [cats])
 
   async function handleCreate(e) {
-    e.preventDefault()
+    e.preventDefault()  // nu lasam browser sa faca refresh la submit
 
     if (!form.categoryId) {
       toast('Choose a category (required).', 'error')
@@ -130,7 +130,7 @@ export default function IncomesTab({ month }) {
               </div>
             </div>
 
-            {/* ✅ AICI era bug-ul: trebuie e.id, nu x.id */}
+
             <IncomeAttachments incomeId={e.id} />
           </li>
         ))}
