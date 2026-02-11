@@ -57,7 +57,7 @@ public class ExpenseService {
         Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Expense not found"));
 
-        // protecție: să nu vezi expense-ul altui user
+
         if (!expense.getUser().getId().equals(userId)) {
             throw new NotFoundException("Expense not found");
         }

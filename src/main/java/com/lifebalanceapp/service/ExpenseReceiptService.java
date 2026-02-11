@@ -122,8 +122,7 @@ public class ExpenseReceiptService {
                 .toList();
     }
 
-    // ✅ ASTA e metoda pe care o folosește controller-ul la /file
-    // și NU mai are voie să fie LAZY
+
     @Transactional
     public ExpenseReceipt getReceiptForUser(Integer userId, Integer receiptId) {
         ExpenseReceipt receipt = receiptRepository.findByIdWithExpenseAndUser(receiptId)
@@ -135,7 +134,7 @@ public class ExpenseReceiptService {
         return receipt;
     }
 
-    // poți să o păstrezi, dar controller-ul poate folosi direct receipt.getFilePath()
+
     @Transactional
     public Path resolvePhysicalPath(Integer userId, Integer receiptId) {
         ExpenseReceipt receipt = getReceiptForUser(userId, receiptId);

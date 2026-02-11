@@ -62,10 +62,6 @@ public class AuthService {
         dto.setEmail(user.getEmail());
         dto.setAbout(user.getAbout());
 
-        // IMPORTANT:
-        // - API_BASE pe frontend e "/api"
-        // - controller-ul e "/api/profile/avatar"
-        // deci aici trimitem doar "/profile/avatar"
         dto.setAvatarUrl(user.getAvatarPath() == null || user.getAvatarPath().isBlank()
                 ? null
                 : "/profile/avatar");

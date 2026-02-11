@@ -87,7 +87,7 @@ public class IncomeService {
                     .orElseThrow(() -> new NotFoundException("Category not found"));
 
             if (category.getType() != CategoryType.INCOME) {
-                throw new IllegalArgumentException("Category must be EXPENSE");
+                throw new IllegalArgumentException("Category must be INCOME");
             }
 
 

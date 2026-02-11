@@ -1,7 +1,10 @@
 package com.lifebalanceapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "user_saving_settings")
 public class SavingSetting {
@@ -16,6 +19,7 @@ public class SavingSetting {
     @Column(nullable = false)
     private Boolean active = true;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId
     @JoinColumn(name = "user_id")

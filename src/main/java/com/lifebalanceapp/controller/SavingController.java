@@ -17,16 +17,16 @@ import java.time.YearMonth;
 @RequestMapping("/api/savings")
 public class SavingController {
 
-    private final SavingSettingRepository repo;
-    private final SavingsTransactionRepository repoTx;
-    private final UserRepository userRepo;
+    private final SavingSettingRepository savingSettingRepository;
+    private final SavingsTransactionRepository savingsTransactionRepository;
+    private final UserRepository userRepository;
 
-    public SavingController(SavingSettingRepository repo,
-                            SavingsTransactionRepository repoTx,
-                            UserRepository userRepo){
-        this.repo = repo;
-        this.repoTx = repoTx;
-        this.userRepo = userRepo;
+    public SavingController(SavingSettingRepository savingSettingRepository,
+                            SavingsTransactionRepository savingsTransactionRepository,
+                            UserRepository userRepository) {
+        this.savingSettingRepository = savingSettingRepository;
+        this.savingsTransactionRepository = savingsTransactionRepository;
+        this.userRepository = userRepository;
     }
 
     private Integer requireUserId(HttpSession session){
@@ -39,15 +39,15 @@ public class SavingController {
     public SavingSetting get(HttpSession session){
         Integer userId = requireUserId(session);
 
-        return repo.findById(userId).orElseGet(() -> {
-            var user = userRepo.findById(userId)
+        return savingSettingRepository.findById(userId).orElseGet(() -> {
+            var user = userRepository.findById(userId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
             SavingSetting s = new SavingSetting();
-            s.setUser(user);         // CRUCIAL pentru @MapsId
+            s.setUser(user);
             s.setPercentage(10.0);
             s.setActive(true);
-            return repo.save(s);
+            return savingSettingRepository.save(s);
         });
     }
 
@@ -55,12 +55,12 @@ public class SavingController {
     public SavingSetting update(@RequestBody SavingSetting req, HttpSession session){
         Integer userId = requireUserId(session);
 
-        SavingSetting s = repo.findById(userId)
+        SavingSetting s = savingSettingRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Settings not found"));
 
         s.setPercentage(req.getPercentage());
         s.setActive(req.getActive());
-        return repo.save(s);
+        return savingSettingRepository.save(s);
     }
 
     @GetMapping("/monthly")
@@ -71,9 +71,9 @@ public class SavingController {
         LocalDate start = ym.atDay(1);
         LocalDate end = ym.plusMonths(1).atDay(1);
 
-        return repoTx.findByUser_IdAndDateSavedBetween(userId, start, end)
+        return savingsTransactionRepository.findByUser_IdAndDateSavedBetween(userId, start, end)
                 .stream()
-                .map(tx -> tx.getAmount())                 // BigDecimal
+                .map(tx -> tx.getAmount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

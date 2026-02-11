@@ -5,7 +5,11 @@ import com.lifebalanceapp.dto.ProfileUpdateRequestDto;
 import com.lifebalanceapp.service.ProfileService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,18 +51,18 @@ public class ProfileController {
     }
 
     @GetMapping("/avatar")
-    public ResponseEntity<org.springframework.core.io.Resource> viewAvatar(HttpSession session) {
+    public ResponseEntity<Resource> viewAvatar(HttpSession session) {
         Integer userId = requireUserId(session);
 
         ProfileService.AvatarFile af = profileService.getAvatarFile(userId);
         if (af == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No avatar");
 
-        org.springframework.core.io.Resource resource = new org.springframework.core.io.FileSystemResource(af.path());
+        Resource resource = new FileSystemResource(af.path());
         if (!resource.exists()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
 
         return ResponseEntity.ok()
-                .contentType(org.springframework.http.MediaType.parseMediaType(af.contentType()))
-                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                .contentType(MediaType.parseMediaType(af.contentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
                         "inline; filename=\"" + af.filename() + "\"")
                 .body(resource);
     }

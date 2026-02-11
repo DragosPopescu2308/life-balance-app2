@@ -33,17 +33,17 @@ public class SavingService {
     public void processSavings(Income income){
         if (income == null || income.getUser() == null || income.getId() == null) return;
 
-        // nu dubla savings pt același income
+
         if (savingsRepo.existsByIncome_Id(income.getId())) return;
 
         Integer userId = income.getUser().getId();
 
-        // ✅ CREARE AUTOMATĂ setare dacă lipsește
+
         SavingSetting setting = settingRepo.findById(userId).orElseGet(() -> {
             User u = userRepo.findById(userId).orElseThrow();
             SavingSetting s = new SavingSetting();
-            s.setUser(u);          // CRUCIAL pentru @MapsId
-            s.setPercentage(10.0); // default
+            s.setUser(u);
+            s.setPercentage(10.0);
             s.setActive(true);
             return settingRepo.save(s);
         });

@@ -24,7 +24,7 @@ public class ExpenseController {
     private Integer requireUserId(HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
-            // 401
+
             throw new org.springframework.web.server.ResponseStatusException(
                     org.springframework.http.HttpStatus.UNAUTHORIZED, "Not authenticated"
             );

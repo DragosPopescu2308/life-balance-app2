@@ -67,7 +67,7 @@ public class ExpenseReceiptController {
     ) {
         Integer userId = requireUserId(session);
 
-        // ✅ fetch join (NU mai e lazy)
+
         ExpenseReceipt receipt = receiptService.getReceiptForUser(userId, receiptId);
 
         java.nio.file.Path path = receiptService.resolvePhysicalPath(userId, receiptId);

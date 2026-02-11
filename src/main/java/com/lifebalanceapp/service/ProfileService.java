@@ -63,7 +63,7 @@ public class ProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        // uploads/avatars/<userId>/
+
         Path dir = uploadRoot.resolve("avatars").resolve(String.valueOf(userId));
         try {
             Files.createDirectories(dir);
@@ -80,7 +80,7 @@ public class ProfileService {
 
         Path target = dir.resolve("avatar" + ext).normalize();
 
-        // dacă exista avatar vechi, îl ștergem (best effort)
+
         if (user.getAvatarPath() != null && !user.getAvatarPath().isBlank()) {
             try {
                 Files.deleteIfExists(uploadRoot.resolve(user.getAvatarPath()).normalize());
@@ -138,7 +138,7 @@ public class ProfileService {
         dto.setEmail(u.getEmail());
         dto.setAbout(u.getAbout());
 
-        // IMPORTANT: frontend folosește asta ca <img src="API_BASE + avatarUrl">
+
         dto.setAvatarUrl(u.getAvatarPath() == null ? null : "/profile/avatar");
 
         return dto;

@@ -6,8 +6,10 @@ import com.lifebalanceapp.dto.IncomeUpdateRequestDto;
 import com.lifebalanceapp.service.IncomeService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -24,8 +26,8 @@ public class IncomeController {
     private Integer requireUserId(HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
-            throw new org.springframework.web.server.ResponseStatusException(
-                    org.springframework.http.HttpStatus.UNAUTHORIZED, "Not authenticated"
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "Not authenticated"
             );
         }
         return userId;

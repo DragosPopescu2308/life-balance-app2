@@ -4,12 +4,15 @@ import com.lifebalanceapp.dto.IncomeAttachmentResponseDto;
 import com.lifebalanceapp.model.IncomeAttachment;
 import com.lifebalanceapp.service.IncomeAttachmentService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -65,9 +68,9 @@ public class IncomeAttachmentController {
         Integer userId = requireUserId(session);
 
         IncomeAttachment a = service.getForUser(userId, attachmentId);
-        java.nio.file.Path path = service.resolvePhysicalPath(userId, attachmentId);
+        Path path = service.resolvePhysicalPath(userId, attachmentId);
 
-        org.springframework.core.io.Resource resource = new org.springframework.core.io.FileSystemResource(path);
+      Resource resource = new FileSystemResource(path);
         if (!resource.exists()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
 
         String contentType = a.getContentType();
