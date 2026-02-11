@@ -1,33 +1,44 @@
-HELP.md
+############################
+# ===== JAVA / SPRING =====
+############################
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+*.class
+*.log
+*.jar
+*.war
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+############################
+# ===== UPLOADS (user files) =====
+############################
+uploads/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+############################
+# ===== FRONTEND (React/Vite) =====
+############################
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/npm-debug.log*
+frontend/yarn-*.log*
+
+############################
+# ===== ENV FILES =====
+############################
+.env
+.env.*
+frontend/.env
+frontend/.env.*
+
+############################
+# ===== IDE =====
+############################
+.idea/
 *.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
 .vscode/
+
+############################
+# ===== OS =====
+############################
+.DS_Store
+Thumbs.db
+desktop.ini
