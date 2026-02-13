@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LifeBalanceApp2Application {
 
     public static void main(String[] args) {
+
         SpringApplication.run(LifeBalanceApp2Application.class, args);
     }
 
