@@ -8,6 +8,7 @@ import IncomesPage from './pages/IncomesPage'
 import CategoriesPage from './pages/CategoriesPage'
 import ProfilePage from './pages/ProfilePage'
 import { AuthProvider, useAuth } from './lib/auth'
+import GoalsPage from './pages/GoalsPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/app/incomes" element={<ProtectedRoute><IncomesPage /></ProtectedRoute>} />
         <Route path="/app/categories" element={<ProtectedRoute><CategoriesPage /></ProtectedRoute>} />
         <Route path="/app/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/app/goals" element={<ProtectedRoute><GoalsPage /></ProtectedRoute>} />
 
         <Route path="/" element={<Navigate to="/app" />} />
       </Routes>

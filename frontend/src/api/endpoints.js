@@ -85,5 +85,19 @@ export { API_BASE };
 export const savings = {
   settings: () => apiGet('/savings/settings'),
   updateSettings: (payload) => apiPut('/savings/settings', payload),
-  monthly: (month) => apiGet(`/savings/monthly?month=${month}`)
+  monthly: (month) => apiGet(`/savings/monthly?month=${month}`),
+
+  remaining: () => apiGet('/savings/remaining')
 }
+
+export const goals = {
+  list: () => apiGet('/goals'),
+
+  create: (payload) => apiPost('/goals', payload),
+
+  update: (id, payload) => apiPut(`/goals/${id}`, payload),
+
+  delete: (id) => apiDelete(`/goals/${id}`),
+
+
+};
