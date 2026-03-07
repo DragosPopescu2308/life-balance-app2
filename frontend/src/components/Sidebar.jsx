@@ -23,6 +23,7 @@ export default function Sidebar() {
         <NavItem to="/app/expenses">Expenses</NavItem>
         <NavItem to="/app/incomes">Incomes</NavItem>
         <NavItem to="/app/categories">Categories</NavItem>
+        <NavItem to="/app/goals">Goals</NavItem>
       </nav>
     </aside>
   )
