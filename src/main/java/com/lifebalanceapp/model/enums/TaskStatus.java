@@ -1,7 +1,7 @@
 package com.lifebalanceapp.model.enums;
 
 public enum TaskStatus {
-    Pending,
-    InProgress,
-    Completed
+    ON_TRACK,
+    DUE_SOON,
+    OVERDUE
 }

@@ -1,48 +1,45 @@
-package com.lifebalanceapp.model;
+package com.lifebalanceapp.dto;
 
 import com.lifebalanceapp.model.enums.AllocationMode;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-@Entity
-public class Goal {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+import java.util.Date;
+
+public class GoalRequestDto {
+    @NotBlank
     private String title;
+
+    @NotNull
+    @Positive
     private BigDecimal targetAmount;
-    private LocalDate deadline;
-    private boolean active;
+
+
     private BigDecimal allocationPercent;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
-    private User user;
 
-    public Goal(){}
 
-    public int getId() {
-        return id;
-    }
+    private LocalDate deadline;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+
+    public GoalRequestDto(){}
+
 
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
+
+
     public BigDecimal getTargetAmount() {
         return targetAmount;
     }
-
     public void setTargetAmount(BigDecimal targetAmount) {
         this.targetAmount = targetAmount;
     }
@@ -52,25 +49,13 @@ public class Goal {
     public LocalDate getDeadline() {
         return deadline;
     }
-
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+
 
     public BigDecimal getAllocationPercent() {
         return allocationPercent;
@@ -79,8 +64,4 @@ public class Goal {
     public void setAllocationPercent(BigDecimal allocationPercent) {
         this.allocationPercent = allocationPercent;
     }
-
-
-
-
 }

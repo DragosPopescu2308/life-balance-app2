@@ -1,35 +1,31 @@
-package com.lifebalanceapp.model;
+package com.lifebalanceapp.dto;
 
 import com.lifebalanceapp.model.enums.AllocationMode;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-@Entity
-public class Goal {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+
+public class GoalUpdateRequestDto {
+
+    @NotBlank
     private String title;
+
+    @NotNull
+    @Positive
     private BigDecimal targetAmount;
+
     private LocalDate deadline;
-    private boolean active;
+
+    @NotNull
+
     private BigDecimal allocationPercent;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Boolean active;
 
-    public Goal(){}
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    public GoalUpdateRequestDto(){}
 
     public String getTitle() {
         return title;
@@ -47,29 +43,12 @@ public class Goal {
         this.targetAmount = targetAmount;
     }
 
-
-
     public LocalDate getDeadline() {
         return deadline;
     }
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public BigDecimal getAllocationPercent() {
@@ -83,4 +62,12 @@ public class Goal {
 
 
 
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }

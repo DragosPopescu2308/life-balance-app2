@@ -1,9 +1,11 @@
 package com.lifebalanceapp.controller;
 
+import com.lifebalanceapp.dto.SavingSettingDto;
 import com.lifebalanceapp.model.SavingSetting;
 import com.lifebalanceapp.repository.SavingSettingRepository;
 import com.lifebalanceapp.repository.SavingsTransactionRepository;
 import com.lifebalanceapp.repository.UserRepository;
+import com.lifebalanceapp.service.SavingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +22,15 @@ public class SavingController {
     private final SavingSettingRepository savingSettingRepository;
     private final SavingsTransactionRepository savingsTransactionRepository;
     private final UserRepository userRepository;
+    private final SavingService savingService;
 
     public SavingController(SavingSettingRepository savingSettingRepository,
                             SavingsTransactionRepository savingsTransactionRepository,
-                            UserRepository userRepository) {
+                            UserRepository userRepository, SavingService savingService) {
         this.savingSettingRepository = savingSettingRepository;
         this.savingsTransactionRepository = savingsTransactionRepository;
         this.userRepository = userRepository;
+        this.savingService = savingService;
     }
 
     private Integer requireUserId(HttpSession session){
@@ -36,23 +40,28 @@ public class SavingController {
     }
 
     @GetMapping("/settings")
-    public SavingSetting get(HttpSession session){
+    public SavingSettingDto get(HttpSession session){
         Integer userId = requireUserId(session);
 
-        return savingSettingRepository.findById(userId).orElseGet(() -> {
+        SavingSetting s = savingSettingRepository.findById(userId).orElseGet(() -> {
             var user = userRepository.findById(userId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-            SavingSetting s = new SavingSetting();
-            s.setUser(user);
-            s.setPercentage(10.0);
-            s.setActive(true);
-            return savingSettingRepository.save(s);
+            SavingSetting created = new SavingSetting();
+            created.setUser(user);
+            created.setPercentage(10.0);
+            created.setActive(true);
+            return savingSettingRepository.save(created);
         });
+
+        SavingSettingDto dto = new SavingSettingDto();
+        dto.setPercentage(s.getPercentage());
+        dto.setActive(s.getActive());
+        return dto;
     }
 
     @PutMapping("/settings")
-    public SavingSetting update(@RequestBody SavingSetting req, HttpSession session){
+    public SavingSettingDto update(@RequestBody SavingSettingDto req, HttpSession session){
         Integer userId = requireUserId(session);
 
         SavingSetting s = savingSettingRepository.findById(userId)
@@ -60,7 +69,12 @@ public class SavingController {
 
         s.setPercentage(req.getPercentage());
         s.setActive(req.getActive());
-        return savingSettingRepository.save(s);
+        SavingSetting saved = savingSettingRepository.save(s);
+
+        SavingSettingDto dto = new SavingSettingDto();
+        dto.setPercentage(saved.getPercentage());
+        dto.setActive(saved.getActive());
+        return dto;
     }
 
     @GetMapping("/monthly")
@@ -75,5 +89,11 @@ public class SavingController {
                 .stream()
                 .map(tx -> tx.getAmount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @GetMapping("/remaining")
+    public BigDecimal remaining(HttpSession session){
+        Integer userId = requireUserId(session);
+        return savingService.getRemainingSavings(userId);
     }
 }
