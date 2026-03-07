@@ -4,6 +4,7 @@ import com.lifebalanceapp.model.Income;
 import com.lifebalanceapp.model.SavingSetting;
 import com.lifebalanceapp.model.SavingsTransaction;
 import com.lifebalanceapp.model.User;
+import com.lifebalanceapp.repository.GoalAllocationRepository;
 import com.lifebalanceapp.repository.SavingSettingRepository;
 import com.lifebalanceapp.repository.SavingsTransactionRepository;
 import com.lifebalanceapp.repository.UserRepository;
@@ -20,13 +21,18 @@ public class SavingService {
     private final SavingSettingRepository settingRepo;
     private final SavingsTransactionRepository savingsRepo;
     private final UserRepository userRepo;
+    private final GoalAllocationService goalAllocationService;
+    private final GoalAllocationRepository goalAllocationRepository;
 
     public SavingService(SavingSettingRepository settingRepo,
                          SavingsTransactionRepository savingsRepo,
-                         UserRepository userRepo) {
+                         UserRepository userRepo,
+                         GoalAllocationService goalAllocationService, GoalAllocationRepository goalAllocationRepository) {
         this.settingRepo = settingRepo;
         this.savingsRepo = savingsRepo;
         this.userRepo = userRepo;
+        this.goalAllocationService = goalAllocationService;
+        this.goalAllocationRepository = goalAllocationRepository;
     }
 
     @Transactional
@@ -72,5 +78,17 @@ public class SavingService {
         st.setCreatedAt(LocalDateTime.now());
 
         savingsRepo.save(st);
+        goalAllocationService.allocateAuto(st);
+    }
+
+    public BigDecimal getRemainingSavings(Integer userId){
+
+        BigDecimal totalSavings =
+                savingsRepo.sumSavingsForUser(userId);
+
+        BigDecimal allocated =
+                goalAllocationRepository.sumAllocatedForUser(userId);
+
+        return totalSavings.subtract(allocated).max(BigDecimal.ZERO);
     }
 }
